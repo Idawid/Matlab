@@ -1,23 +1,28 @@
 % read image and convert to double precision grayscale
-originalImage = imread('star.jpg');
+originalImage = imread('parrot.png');
 originalImage = imresize(originalImage, [192,192]); % scale it down or else it takes ages
 initialImage = im2double(rgb2gray(originalImage));
 % plot
 figure
-subplot(1, 3, 1);
+subplot(2, 3, 1);
 imshow(initialImage);
 title('Original Image');
 
 % create a mask
-maskSize = 4;
 imageSize = size(initialImage,1);
 mask = ones(imageSize);
-mask([(floor(imageSize/2)-maskSize):(floor(imageSize/2)+maskSize)],:) = 0;
+
+% generate three random positions for the 40x40 squares within the image boundaries
+for i = 1:3
+    randRow = randi([1, imageSize-40]); % generate a random row index
+    randCol = randi([1, imageSize-40]); % generate a random column index
+    mask(randRow:(randRow+39), randCol:(randCol+39)) = 0;
+end
 
 % apply mask to initial image
 noisyImage = mask .* initialImage;
 % plot
-subplot(1, 3, 2);
+subplot(2, 3, 2);
 imshow(noisyImage);
 title('Noisy Image');
 
@@ -45,14 +50,25 @@ iterations = 40000;
 currentImage = noisyImage;
 energy = zeros(1,iterations);
 
+
+output_iterations = [iterations/4, iterations/2, iterations*3/4];
+
 % projected gradient descent loop
 for i=1:iterations
     energy(i) = totalVariation(currentImage, smoothingParam);
     tempImage = currentImage - stepSize * gradientOfTV(currentImage, smoothingParam);
     currentImage = projectOntoD(tempImage);
+    
+    if ismember(i, output_iterations)
+        % display denoised image
+        subplot_position = find(output_iterations == i);
+        subplot(2, 3, 3+subplot_position);
+        imshow(currentImage);
+        title(sprintf('Iteration %d/%d', i, iterations));
+    end
 end
 
 % display denoised image
-subplot(1, 3, 3);
+subplot(2, 3, 3);
 imshow(currentImage);
 title('Restored Image')
