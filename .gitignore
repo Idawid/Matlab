@@ -1,0 +1,78 @@
+# MATLAB Ignore
+
+# MATLAB auto-generated files
+*.asv
+*.mexa64
+*.mexmaci64
+*.mexw64
+*.slxc
+*.slxsim
+*.mltbx
+*.mlapp
+*.mlx
+*.mlappinstall
+*.mexglx
+*.mexmaci64
+*.mexw32
+*.mexw64
+*.mlx
+*.mltbx
+*.mlapp
+*.mlappinstall
+*.mat
+*.p
+*.mex
+*.ctf
+*.ctfinfo
+*.ldf
+
+# MATLAB code analyzer files
+*.m~*
+
+# MATLAB Simulink files
+*.slx
+*.sldd
+*.ssc
+*.ssci
+
+# MATLAB Project files
+*.prj
+
+# MATLAB temporary files
+slprj/
+*.mex*
+
+# MATLAB backup files
+*~
+*.asv
+*.bak
+
+# MATLAB preferences
+*.matpref
+*.cfinfo
+
+# MATLAB generated code
+codegen/
+mexfiles/
+
+# Compiled MATLAB code
+*.dll
+*.exe
+*.oct
+*.so
+*.dylib
+
+# MATLAB environment files
+*.asv
+*.asv.m
+
+# MATLAB Dependency Reports
+*.xlsx
+*.xlsm
+*.xlsb
+*.xls
+*.xml
+*.bin
+*.jar
+
+#
