@@ -25,6 +25,12 @@ Here are the functions defined in the script and their mathematical background:
 
 ## Results
 
+### Mask is a line
 <p align="center">
-  <img src="https://github.com/Idawid/Matlab/blob/main/ConvexOptimization/ProjectedGradientDescent/result.jpg" alt="Result Image">
+  <img src="https://github.com/Idawid/Matlab/blob/main/ConvexOptimization/ProjectedGradientDescent/result_star.jpg" alt="Result Image Star">
+</p>
+
+### Mask is 3 randomly placed squares
+<p align="center">
+  <img src="https://github.com/Idawid/Matlab/blob/main/ConvexOptimization/ProjectedGradientDescent/result_parrot.jpg" alt="Result Image Parrot">
 </p>
