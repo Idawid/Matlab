@@ -46,7 +46,7 @@ gradientOfTV = @(image,smoothingParam)-computeDivergence(normalize(computeGradie
 stepSize = 1.8/(8/smoothingParam);
 iterations = 40000;
 
-% initialize by noisy image
+% initialize by noisy imagex    
 currentImage = noisyImage;
 energy = zeros(1,iterations);
 
