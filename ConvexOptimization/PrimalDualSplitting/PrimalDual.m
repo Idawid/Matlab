@@ -32,6 +32,7 @@ totalVariationFunc = @(image) sum(sum(normFunc(gradientFunc(image))));
 % Define proximal operators
 proximalOperatorF = @(gradient, stepSize) max(0,1-stepSize./repmat(normFunc(gradient),[1 1 2])).*gradient;
 proximalOperatorFs = @(gradient, stepSize) gradient - stepSize * proximalOperatorF(gradient/stepSize, 1/stepSize);
+
 proximalOperatorG = @(image, stepSize) image + randomMask .* (noisyImage - randomMask .* image);
 
 % Initialize algorithm parameters
@@ -41,9 +42,9 @@ relaxationParam = 1;
 numIterations = 100;
 
 % Initialize primal and dual variables
-primalVar = noisyImage;
-relaxedPrimalVar = noisyImage;
-dualVar = 0 * gradientFunc(noisyImage);
+primalVar = noisyImage;             
+relaxedPrimalVar = noisyImage;      % relaxed primal variable (the current estimate of the denoised image
+dualVar = 0 * gradientFunc(noisyImage); % makes it easier to solve
 
 % Initialize variables for storing the total variation and SNR at each iteration
 totalVariation = zeros(1, numIterations);
@@ -51,10 +52,20 @@ SNR = zeros(1, numIterations);
 
 % Main loop for the primal-dual splitting method
 for i=1:numIterations
+    % we move by the gradient of the gradient of relaxed primal variable
+    % (current estimate of the denoised image)
+    % and we use proximalOperatorFs to keep the gradient small
     dualVar = proximalOperatorFs(dualVar + dualStepSize * gradientFunc(relaxedPrimalVar), dualStepSize);
+
     oldPrimalVar = primalVar;
+    % update the current estimate of the denoised image
+    % we measure how the dual variable changes with divergenceFunc across
+    % the image. 
     primalVar = proximalOperatorG(primalVar + primalStepSize * divergenceFunc(dualVar), primalStepSize);
+    
+    % relaxation step: primal var * relaxation param * diff
     relaxedPrimalVar = primalVar + relaxationParam * (primalVar - oldPrimalVar);
+
     totalVariation(i) = totalVariationFunc(relaxedPrimalVar);
     SNR(i) = snr(originalImageGray, relaxedPrimalVar);    
 end

@@ -25,6 +25,8 @@ title('Original Image');
 
 % x - x(:, [end, 1:end-1]) is the diff between the img and the img shifted
 % to the right (by 1 column) or the bottom (by 1 row). Concat by z dim (we just stack them).
+
+% Calculate X and Y gradient
 gradient_operator = @(x) cat(3, x - x(:, [end, 1:end-1]), x - x([end, 1:end-1], :));
 gradients = gradient_operator(img_normalized);
 
@@ -36,15 +38,6 @@ subplot(2, 3, 3);
 imshow(abs(gradients(:, :, 2)));
 title('Y-Gradient');
 
-% on dim: A*A*2
-% jesus christ:
-% v(:, [2:end, 1], 1) shifts the img back to normal, we subtract the
-% right-shifted version from it
-% same is done with the 2. layer, shift to normal, subtract the bot-shifted
-% version
-% those differences are then added. Result is of dim A*A
-divergence_operator = @(v) (v(:, [2:end, 1], 1) - v(:, :, 1) + v([2:end, 1], :, 2) - v(:, :, 2));
-
 noise_sigma = 0.1;
 noisy_image = img_normalized + 0.1 * rand(size(img_normalized, 1));
 
@@ -52,13 +45,14 @@ subplot(2, 3, 4);
 imshow(noisy_image);
 title('Noisy Image');
 
+% Define regularization parameters and functions
 regularization_lambda = 0.3 / 5;
-
 regularization_epsilon = 0.001;
-%
 norm_epsilon = @(u) sqrt(regularization_epsilon^2 + sum(u.^2, 3));
 regularization_term = @(x) sum(sum(norm_epsilon(gradient_operator(x))));
+divergence_operator = @(v) (v(:, [2:end, 1], 1) - v(:, :, 1) + v([2:end, 1], :, 2) - v(:, :, 2));
 
+% Define fidelity term and its gradient
 data_fidelity_term = @(x) 1/2 * norm(x - noisy_image)^2;
 gradient_norm_epsilon = @(u) u ./ repmat(norm_epsilon(u), [1, 1, 2]);
 regularization_gradient = @(x) -divergence_operator(gradient_norm_epsilon(gradient_operator(x)));
